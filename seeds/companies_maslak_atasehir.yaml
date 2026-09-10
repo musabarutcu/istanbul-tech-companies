@@ -1,0 +1,31 @@
+# Maslak ve Ataşehir'deki önemli şirketler — elle doğrulanmış liste.
+#
+# Bu iki bölge (Maslak/Sarıyer-Şişli hattı, Ataşehir) klasik "teknokent" gibi
+# tek bir dizin sayfası olan yerler değil; büyük şirketlerin genel müdürlük
+# adresleri farklı plaza/kampüslere dağılmış durumda. Otomatik bir dizin
+# bulunamadığı için (denenen genel iş rehberi siteleri site/domain bilgisi
+# içermiyordu — bkz. proje notları) her satır web aramasıyla tek tek
+# doğrulanmış gerçek genel müdürlük adresine dayanıyor.
+#
+# Kapsam bilinçli olarak dar tutuldu: tahmine dayalı "büyük olasılıkla
+# buradadır" girişleri eklenmedi (ör. AIG Sigorta'nın Maslak'ta olduğu
+# doğrulandı ama resmî Türkiye alan adı bulunamadığı için dışarıda bırakıldı).
+
+source:
+  key: manual_maslak_atasehir
+  kind: manual
+  name: "Maslak / Ataşehir — elle doğrulanmış önemli şirketler"
+
+companies:
+  # --- Maslak (Sarıyer/Şişli, Büyükdere Caddesi hattı) ---
+  - { name: "Doğuş Teknoloji", website: "https://www.d-teknoloji.com.tr", city: "İstanbul" }
+  - { name: "Odeabank",        website: "https://www.odeabank.com.tr",   city: "İstanbul" }
+  - { name: "Zurich Sigorta",  website: "https://www.zurichsigorta.com.tr", city: "İstanbul" }
+  - { name: "Vodafone Türkiye", website: "https://www.vodafone.com.tr",  city: "İstanbul" }
+  - { name: "Deloitte Türkiye", website: "https://www.deloitte.com/tr/tr", city: "İstanbul" }
+
+  # --- Ataşehir (İstanbul Finans Merkezi dahil) ---
+  - { name: "Migros",        website: "https://www.migros.com.tr",     city: "İstanbul" }
+  - { name: "Ziraat Bankası", website: "https://www.ziraatbank.com.tr", city: "İstanbul" }
+  - { name: "VakıfBank",     website: "https://www.vakifbank.com.tr",  city: "İstanbul" }
+  - { name: "Halkbank",      website: "https://www.halkbank.com.tr",   city: "İstanbul" }

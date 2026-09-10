@@ -1,0 +1,43 @@
+# Şirket sınıflandırma taksonomisi — dört ortogonal boyut.
+#
+# `domain` çok etiketlidir (bir şirket hem "ai_ml" hem "web_saas" olabilir).
+# Diğer üç boyut tek değerlidir. Etiketler `company_labels` tablosuna
+# dimension=... olarak yazılır; her etiket confidence + evidence_url +
+# model + as_of taşır — LLM tahmini asla doğrulanmış veriyle aynı sütunda
+# tutulmaz (plan ilkesi).
+
+domain:
+  - ai_ml               # Yapay zeka, makine öğrenmesi, veri bilimi ürün/hizmeti
+  - quantum_derin_tek    # Kuantum hesaplama, fotonik, ileri malzeme, Ar-Ge ağırlıklı
+  - web_saas             # Web/mobil uygulama, B2B/B2C SaaS ürünü
+  - gomulu               # Gömülü yazılım, IoT, donanım entegrasyonlu sistemler
+  - siber_guvenlik
+  - fintech
+  - savunma_havacilik
+  - robotik_otonom
+  - oyun
+  - veri_muhendisligi    # Veri altyapısı, ETL, analitik platformları
+  - bulut_devops
+  - saglik_bio
+  - eticaret
+  - danismanlik          # IT danışmanlığı, sistem entegrasyonu, dış kaynak yazılım
+
+size_bucket:
+  - mikro      # <10 kişi (yalnızca kanıt varsa; yoksa boş bırakılır)
+  - kucuk      # 10-50
+  - orta       # 50-250
+  - buyuk      # 250-1000
+  - kurumsal   # 1000+
+
+sector:
+  - urun           # Kendi ürününü satan şirket
+  - b2b_saas
+  - danismanlik    # Dış kaynak / sistem entegratörü
+  - arastirma      # Ar-Ge merkezi, laboratuvar, akademik spin-off
+  - kamu
+  - savunma
+
+# Serbest metin: siteden/ilanlardan çıkarılan teknoloji etiketleri (python,
+# react, kubernetes, qiskit...). Ayrı bir sabit liste yok — LLM'in gördüğü
+# gerçek isimleri birebir yazması istenir.
+stack: freeform

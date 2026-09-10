@@ -1,0 +1,66 @@
+# Tohum şirket listesi — Faz 0'ın uçtan uca doğrulaması için.
+#
+# Bu liste "keşif" değil, boru hattının çalıştığını kanıtlamak için elle yazılmış
+# bilinen şirketlerden oluşuyor. Asıl hacim Faz 1'de teknokent dizinlerinden,
+# VC portföylerinden ve dernek üye listelerinden gelecek.
+#
+# Alan adları doğrulanmayı bekliyor; yanlış olan `detect` aşamasında hata olarak
+# işaretlenir, boru hattını durdurmaz.
+
+source:
+  key: manual_seed
+  kind: manual
+  name: Elle girilen tohum listesi
+
+companies:
+  # --- Ölçekli ürün / e-ticaret / fintech ---
+  - { name: "Trendyol",        website: "https://www.trendyol.com",     city: "İstanbul" }
+  - { name: "Getir",           website: "https://www.getir.com",        city: "İstanbul" }
+  - { name: "Hepsiburada",     website: "https://www.hepsiburada.com",  city: "İstanbul" }
+  - { name: "Insider",         website: "https://useinsider.com",       city: "İstanbul" }
+  - { name: "Sahibinden.com",  website: "https://www.sahibinden.com",   city: "İstanbul" }
+  - { name: "Yemeksepeti",     website: "https://www.yemeksepeti.com",  city: "İstanbul" }
+  - { name: "Armut",           website: "https://www.armut.com",        city: "İstanbul" }
+  - { name: "Papara",          website: "https://www.papara.com",       city: "İstanbul" }
+  - { name: "iyzico",          website: "https://www.iyzico.com",       city: "İstanbul" }
+  - { name: "Param",           website: "https://www.param.com.tr",     city: "İstanbul" }
+  - { name: "Craftgate",       website: "https://craftgate.io",         city: "İstanbul" }
+  - { name: "Midas",           website: "https://www.getmidas.com",     city: "İstanbul" }
+  - { name: "Colendi",         website: "https://colendi.com",          city: "İstanbul" }
+
+  # --- Oyun ---
+  - { name: "Dream Games",     website: "https://dreamgames.com",       city: "İstanbul" }
+  - { name: "Peak",            website: "https://peak.com",             city: "İstanbul" }
+  - { name: "Rollic",          website: "https://rollicgames.com",      city: "İstanbul" }
+  - { name: "TaleWorlds Entertainment", website: "https://www.taleworlds.com", city: "Ankara" }
+
+  # --- Yazılım ürünü / SaaS ---
+  - { name: "Logo Yazılım",    website: "https://www.logo.com.tr",      city: "İzmir" }
+  - { name: "Jotform",         website: "https://www.jotform.com",      city: "Ankara" }
+  - { name: "Segmentify",      website: "https://www.segmentify.com",   city: "İstanbul" }
+  - { name: "Sufle",           website: "https://sufle.io",             city: "İstanbul" }
+
+  # --- Yapay zeka / veri / siber güvenlik ---
+  - { name: "Vispera",         website: "https://vispera.co",           city: "İstanbul" }
+  - { name: "Picus Security",  website: "https://www.picussecurity.com", city: "Ankara" }
+
+  # --- Savunma / havacılık (kendi kariyer portalları var, ATS beklenmiyor) ---
+  - { name: "ASELSAN",         website: "https://www.aselsan.com.tr",   city: "Ankara" }
+  - { name: "HAVELSAN",        website: "https://www.havelsan.com.tr",  city: "Ankara" }
+  - { name: "TUSAŞ",           website: "https://www.tusas.com",        city: "Ankara" }
+  - { name: "Roketsan",        website: "https://www.roketsan.com.tr",  city: "Ankara" }
+  - { name: "Baykar",          website: "https://baykartech.com",       city: "İstanbul" }
+  - { name: "STM",             website: "https://www.stm.com.tr",       city: "Ankara" }
+
+  # --- Kurumsal teknoloji / danışmanlık ---
+  - { name: "OBSS",            website: "https://obss.tech",            city: "İstanbul" }
+  - { name: "Commencis",       website: "https://www.commencis.com",    city: "İstanbul" }
+  - { name: "Kartaca",         website: "https://kartaca.com",          city: "Ankara" }
+  - { name: "Testinium",       website: "https://testinium.com",        city: "İstanbul" }
+  - { name: "Mobven",          website: "https://mobven.com",           city: "İstanbul" }
+  - { name: "Netaş",           website: "https://www.netas.com.tr",     city: "İstanbul" }
+
+  # --- Büyük sanayi / telekom (staj programları güçlü) ---
+  - { name: "Turkcell",        website: "https://www.turkcell.com.tr",  city: "İstanbul" }
+  - { name: "Arçelik",         website: "https://www.arcelikglobal.com", city: "İstanbul" }
+  - { name: "Vestel",          website: "https://www.vestel.com.tr",    city: "Manisa" }

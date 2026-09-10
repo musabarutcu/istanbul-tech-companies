@@ -1,0 +1,208 @@
+# Dizin kaynakları — şirket keşfinin tamamı buradan geliyor.
+#
+# Yeni kaynak eklemek için Python yazmak gerekmez; buraya birkaç satır eklemek yeterli.
+# Kip (mode) seçimi:
+#   structured — listede hem isim hem firma sitesi var
+#   detail     — listede isim + detay bağlantısı var, site detay sayfasında
+#   outbound   — yapı haritalanmadı; sayfadaki dış bağlantılardan firma sitelerini ayıklar
+#
+# Bir kaynak çalışmazsa boru hattı durmaz: `sources` tablosuna health=error yazılır,
+# `career-radar sources` komutu hangi kaynağın bozuk olduğunu gösterir.
+#
+# KAPSAM: Proje İstanbul'a özelleştirildi. Ankara teknokentleri (Cyberpark, ODTÜ)
+# bilinçli olarak kapatıldı — aşağıda enabled: false ve nedeni not edilmiş halde
+# duruyorlar, satırlar silinmedi ki geri açmak istenirse tek satırlık değişiklik olsun.
+# Zaten toplanmış Ankara kökenli kayıtlar `dirs --prune-ankara` ile temizlenebilir.
+
+sources:
+  # ------------------------------------------------------------ TEKNOKENTLER
+
+  - key: cyberpark
+    kind: teknokent
+    name: Bilkent CYBERPARK
+    city: Ankara
+    list_url: "https://www.cyberpark.com.tr/firma-arsiv"
+    mode: structured
+    item_selector: "div.mb30"
+    name_selector: "h3.title"
+    sector_selector: "p"
+    website_selector: "a"
+    page_param: page
+    max_pages: 30
+    enabled: false
+    note: "Kapsam kararı: proje İstanbul'a özelleştirildi, Ankara teknokenti kapatıldı."
+
+  - key: dijitalpark
+    kind: teknokent
+    name: Dijitalpark Teknokent
+    city: İstanbul
+    list_url: "https://www.dijitalparkteknokent.com.tr/tr/firmalar"
+    mode: structured
+    item_selector: "div.firma-card"
+    name_attr: title
+    website_selector: "a"
+    page_param: page
+    max_pages: 20
+
+  - key: yildiz_teknopark
+    kind: teknokent
+    name: Yıldız Teknopark
+    city: İstanbul
+    list_url: "https://www.yildizteknopark.com.tr/firmalarimiz"
+    mode: structured
+    item_selector: "div.service-block_six"
+    name_selector: "h6"
+    website_selector: "a"
+    page_param: page
+    max_pages: 30
+
+  - key: ari_teknokent
+    kind: teknokent
+    name: İTÜ ARI Teknokent
+    city: İstanbul
+    list_url: "https://www.ariteknokent.com.tr/tr/teknoloji-firmalari/teknokentli-firmalar"
+    mode: structured
+    item_selector: "div.company-card"
+    name_selector: "div.company-card__title"
+    sector_selector: "div.company-card__sector"
+    sector_attr: title
+    page_param: page
+    max_pages: 30
+    note: "Firma sitesi listede yok, detay modal ile geliyor (uç nokta bulunamadı). İsim + sektör alınır; alan adı sonra isimden çözülecek."
+
+  - key: teknopol_istanbul
+    kind: teknokent
+    name: Teknopol İstanbul
+    city: İstanbul
+    list_url: "https://www.teknopolistanbul.com/butun-firmalar/"
+    mode: detail
+    item_selector: "h2.g5shop__loop-product-title"
+    detail_selector: "a"
+    page_param: paged
+    max_pages: 20
+    note: "Firma sitesi detay sayfasında; ham URL metni olan bağlantıdan çözülür."
+
+  - key: teknopark_istanbul
+    kind: teknokent
+    name: Teknopark İstanbul
+    city: İstanbul
+    list_url: "https://www.teknoparkistanbul.com.tr/tr/ar-ge-firmalari"
+    mode: outbound
+    enabled: false
+    note: "403 — bot koruması. Tarayıcı/Firecrawl turunda ele alınacak. ~343 firma."
+
+  - key: odtu_teknokent
+    kind: teknokent
+    name: ODTÜ TEKNOKENT
+    city: Ankara
+    list_url: "https://odtuteknokent.com.tr/tr/firmalar/tum-firmalar"
+    mode: outbound
+    enabled: false
+    note: "Kapsam kararı: proje İstanbul'a özelleştirildi, Ankara teknokenti kapatıldı. (Ayrıca bu makineden DNS ile de çözülemiyordu.)"
+
+  - key: bilisim_vadisi
+    kind: teknokent
+    name: "Bilişim Vadisi (İstanbul kampüsü)"
+    city: İstanbul
+    list_url: "https://bilisimvadisi.com.tr/hakkimizda/firmalar/istanbul/"
+    mode: structured
+    item_selector: "div.ndr-grid-item"
+    name_selector: "div.ndr-grid-item-title"
+    website_selector: "a"
+    max_pages: 1
+    note: "Vadistanbul kampüsü (Sarıyer/Maslak). Sayfalama yok, tek sayfada ~80 firma."
+
+  # ------------------------------------------------------- VC PORTFÖYLERİ
+  # Sinyal/gürültü oranı en yüksek kaynak: ölçeklenen, işe alan teknoloji şirketleri.
+  # URL'ler canlı olarak doğrulandı; çalışmayanlar kapatıldı ve nedeni not edildi.
+
+  - key: vc_scalex
+    kind: vc
+    name: "ScaleX Ventures"
+    list_url: "https://scalexventures.com/companies"
+    mode: structured
+    item_selector: "div.company-collection-item"
+    website_selector: "a.company-site-link"
+    max_pages: 1
+    note: >-
+      Ana sayfa (/) yalnızca tanıtım metinlerindeki bağlantıları (co-investor alıntıları,
+      KID PDF'i, medium.com) topluyordu; gerçek portföy /companies sayfasındaki
+      .company-collection-item kartlarında. Kart içinde firma adı yok, yalnızca
+      .company-site-link — isim alan adından türetilir.
+
+  - key: endeavor_tr
+    kind: vc
+    name: "Endeavor Türkiye"
+    list_url: "https://endeavor.org.tr/"
+    mode: outbound
+    item_selector: "div.featured-companies"
+    max_pages: 1
+    note: >-
+      Tüm sayfa taraması "E-Bültene Kayıt" (Mailchimp), "Wide Eye" (site-by tasarım
+      kredisi) ve "Etki Raporu" (flipbook) gibi şirket olmayan bağlantıları da
+      yakalıyordu. div.featured-companies yalnızca ana sayfadaki öne çıkan 9 mezunu
+      içeriyor; site geneli girişimci dizini (/companies) React ile yükleniyor,
+      ham HTML'de yok — tarayıcı turunda ele alınacak.
+
+  - key: vc_revo
+    kind: vc
+    name: "Revo Capital"
+    list_url: "https://revo.vc/"
+    mode: outbound
+    item_selector: "div.wp-carousel-scroll"
+    max_pages: 1
+    note: >-
+      /portfolio 404 verdi; ana sayfa kullanılıyor. Tüm sayfa taraması bülten kayıt
+      formunu ve basın/haber bağlantılarını da (bloomberght, webrazzi, microsoft/startups
+      vb.) firma sanıyordu. div.wp-carousel-scroll yalnızca portföy logo karuselini
+      kapsıyor.
+
+  - key: vc_212
+    kind: vc
+    name: "212 (portföy)"
+    list_url: "https://212.vc/portfolio/"
+    mode: outbound
+    max_pages: 1
+    note: >-
+      Portföy tamamen JS/AJAX ile yükleniyor (admin-ajax.php); ham HTML'de yalnızca
+      menü bağlantıları var. Bu artık gürültü üretmiyor (Investor Portal→
+      junipersquare.com ve Medium global istisna listesine eklendi) ama 0 kayıt
+      döndürüyor — gerçek kapsama için tarayıcı turu gerekiyor.
+
+  # ------------------------------------------------------------- DERNEKLER
+
+  - key: tubisad_kurumsal
+    kind: dernek
+    name: "TÜBİSAD kurumsal üyeleri"
+    list_url: "https://www.tubisad.org.tr/tr/uyelik/detay/Uye-Listesi/213/4206/0"
+    mode: outbound
+    max_pages: 1
+
+  - key: tubisad_uye
+    kind: dernek
+    name: "TÜBİSAD üye listesi"
+    list_url: "https://www.tubisad.org.tr/tr/uyelik/detay/Uye-Listesi/212/4033/0"
+    mode: outbound
+    max_pages: 1
+
+  - key: sasad
+    kind: dernek
+    name: "SaSaD üyeleri (savunma)"
+    list_url: "https://www.sasad.org.tr/uyelerimiz"
+    mode: detail
+    item_selector: "div.nm-box"
+    max_pages: 1
+    note: >-
+      outbound kip sayfa genelini tarayınca yalnızca sitewide "Future Soldier" reklam
+      bandını (sticky-btn) buluyordu; 272 üye div.members-list > div.nm-box içinde,
+      her biri kendi detay sayfasına (SASAD içi) bağlanıyor. Firma sitesi detay
+      sayfasında "Web Adresi: xxx.com" biçiminde, şemasız — bare-domain eşleşmesiyle
+      çözülüyor.
+
+  - key: yasad
+    kind: dernek
+    name: "YASAD üyeleri"
+    list_url: "https://www.yasad.org.tr/"
+    mode: outbound
+    enabled: false
+    note: "Ana sayfada firma bağlantısı yok, üye listesi sayfası bulunamadı."

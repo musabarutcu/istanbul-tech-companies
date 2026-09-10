@@ -1,0 +1,351 @@
+/* Career Radar — tasarım sistemi.
+   Fontlar yerine göre karışık kullanılıyor: Inter (arayüz/gövde), IBM Plex Sans
+   (başlıklar/marka), IBM Plex Mono (veri — domain, sayı, id). */
+
+:root {
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "IBM Plex Sans", var(--font-ui);
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Fonksiyonel renk sistemi: mavi = birincil aksiyon/bağlantı, siyah (--ink) =
+     başlık/metin, kırmızı = uyarı/sorun sinyali, yeşil = olumlu sinyal (mail bulundu vb). */
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #f4f4f5;
+  --ink: #0a0b0d;
+  --ink-2: #3f3f46;
+  --muted: #6b6b73;
+  --line: #e4e4e7;
+  --accent: #2563eb;
+  --accent-ink: #ffffff;
+  --accent-soft: #dbeafe;
+  --ok: #15803d;
+  --ok-soft: #e7f6ec;
+  --warn: #b91c1c;
+  --warn-soft: #fce9e9;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 14px rgba(16, 24, 40, 0.08);
+}
+
+/* Koyu tema: sistem tercihi (aşağıdaki media query) VEYA üst bardaki manuel
+   tema düğmesi ([data-theme]) ile devreye girer. Düğme sistem tercihini geçersiz
+   kılabilmeli — bu yüzden aynı token seti iki yerde tanımlı: media query
+   `:not([data-theme="light"])` ile korunuyor (kullanıcı açık temayı seçtiyse
+   sistem koyu olsa bile atlanır), `[data-theme="dark"]` bloğu ise sistem açık
+   olsa da düğmeyle koyu temaya geçebilmek için. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e0e10;
+    --panel: #18181b;
+    --panel-2: #1f1f23;
+    --ink: #f4f4f5;
+    --ink-2: #d4d4d8;
+    --muted: #a1a1aa;
+    --line: #313135;
+    --accent: #60a5fa;
+    --accent-ink: #0b1220;
+    --accent-soft: #1e3a5f;
+    --ok: #4ade80;
+    --ok-soft: #16281f;
+    --warn: #f87171;
+    --warn-soft: #3e1e1e;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e0e10;
+  --panel: #18181b;
+  --panel-2: #1f1f23;
+  --ink: #f4f4f5;
+  --ink-2: #d4d4d8;
+  --muted: #a1a1aa;
+  --line: #313135;
+  --accent: #60a5fa;
+  --accent-ink: #0b1220;
+  --accent-soft: #1e3a5f;
+  --ok: #4ade80;
+  --ok-soft: #16281f;
+  --warn: #f87171;
+  --warn-soft: #3e1e1e;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.55 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------- topbar */
+
+.topbar {
+  display: flex; align-items: center; gap: 20px;
+  padding: 12px 20px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 10;
+}
+.brand {
+  display: flex; align-items: center;
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 20px;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.stats { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+.stat-chip {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  padding: 4px 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px; color: var(--muted);
+  white-space: nowrap;
+}
+.stat-chip b {
+  font-family: var(--font-mono); font-weight: 600;
+  color: var(--ink-2); font-size: 12.5px;
+}
+.topbar-actions { display: flex; gap: 8px; }
+
+/* ---------------------------------------------------------------- layout */
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px 20px;
+  align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+.layout:has(.detail:not([hidden])) {
+  grid-template-columns: 260px minmax(0, 1fr) 360px;
+}
+
+.filters, .results, .detail {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  min-width: 0; /* grid öğeleri varsayılan olarak içeriğin min-content genişliğini zorlar
+                   (uzun <select> metni gibi) — bu olmadan yatay taşma oluşur. */
+}
+.field select { min-width: 0; }
+.filters { padding: 16px; position: sticky; top: 78px; max-height: calc(100vh - 100px); overflow-y: auto; }
+.detail  { padding: 18px; position: sticky; top: 78px; max-height: calc(100vh - 100px); overflow-y: auto; }
+
+/* --------------------------------------------------------------- filtreler */
+
+.field { display: block; margin-bottom: 14px; }
+.field > span {
+  display: block; font-size: 11.5px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.field input, .field select, textarea {
+  width: 100%; padding: 8px 10px;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--panel-2); color: var(--ink); font: inherit; font-size: 13.5px;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.field input:hover, .field select:hover, textarea:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.field input:focus, .field select:focus, textarea:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.field-search input {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="%236b7280" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>');
+  background-repeat: no-repeat;
+  background-position: 9px center;
+  padding-left: 30px;
+}
+
+.checks { border: 1px solid var(--line); border-radius: var(--radius-md); padding: 10px 12px; margin: 0 0 14px; background: var(--panel-2); }
+.checks legend { font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 0 4px; }
+.checks label { display: flex; align-items: center; gap: 7px; padding: 4px 2px; cursor: pointer; font-size: 13px; color: var(--ink-2); border-radius: 6px; }
+.checks label:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.checks input { accent-color: var(--accent); width: 14px; height: 14px; }
+
+#categoryChecks { max-height: 236px; overflow-y: auto; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid transparent; border-radius: var(--radius-sm);
+  background: var(--accent); color: var(--accent-ink);
+  font: inherit; font-weight: 600; font-size: 13px;
+  text-decoration: none; cursor: pointer;
+  transition: filter 120ms ease, transform 120ms ease, background 120ms ease;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn:active { transform: translateY(1px); }
+.btn-ghost { background: transparent; color: var(--ink-2); border-color: var(--line); }
+.btn-ghost:hover { background: var(--panel-2); filter: none; }
+.btn:disabled { opacity: 0.4; cursor: default; filter: none; }
+
+/* İkon-only butonlar: en az 36x36 (masaüstü) — dar ekranda 44x44'e çıkar (aşağıda). */
+.icon-btn { min-width: 36px; padding: 8px; }
+.icon-btn svg { width: 16px; height: 16px; flex: none; }
+.detail .close { float: right; margin-bottom: 8px; }
+
+/* Tüm form/seçim kontrollerinde imleç açıkça "pointer" olsun. */
+.field select, .checks input, .checks label { cursor: pointer; }
+
+/* ----------------------------------------------------------------- tablo */
+
+.results-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 18px; border-bottom: 1px solid var(--line);
+  color: var(--muted); font-size: 13px;
+}
+.pager { display: flex; align-items: center; gap: 8px; }
+.pager .btn-ghost { padding: 6px 10px; }
+#pageinfo { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+/* Veri-yoğun panel: 1246 satırlık bir tabloda ekranda görünen satır sayısı
+   önemli — dikey dolguyu sıkı tutuyoruz (Data-Dense Dashboard deseni). */
+th, td { text-align: left; padding: 9px 18px; border-bottom: 1px solid var(--line); }
+th {
+  font-size: 11px; color: var(--muted); font-weight: 700; white-space: nowrap;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  background: var(--panel-2);
+}
+td.num, th.num { text-align: right; font-family: var(--font-mono); }
+tbody tr { cursor: pointer; transition: background 100ms ease; }
+tbody tr:hover { background: var(--accent-soft); }
+tbody tr.selected { background: var(--accent-soft); box-shadow: inset 2px 0 0 var(--accent); }
+
+.name { font-weight: 600; color: var(--ink); }
+.sub { color: var(--muted); font-size: 12px; font-family: var(--font-mono); }
+.muted { color: var(--muted); }
+
+.tag {
+  display: inline-block; padding: 2px 9px; margin: 1px 3px 1px 0;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--ink-2); font-size: 11px; font-weight: 500; white-space: nowrap;
+}
+.tag-ok   { background: var(--ok-soft);   border-color: transparent; color: var(--ok); }
+.tag-warn { background: var(--warn-soft); border-color: transparent; color: var(--warn); }
+
+/* Kategori etiketleri: her taksonomi alanının (ai_ml, fintech, ...) kendi rengi var —
+   tabloda taramayı hızlandırmak için. Kırmızı kasıtlı olarak kullanılmadı (uyarı rengiyle
+   karışmasın diye); tonlar 14 kategoriye eşit aralıklı ton (hue) dağılımıyla üretildi. */
+.tag[class*="cat-"] { background: var(--cat-bg); border-color: transparent; color: var(--cat-fg); }
+.cat-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--cat-fg); margin-right: 5px; flex: none; }
+
+.cat-ai_ml             { --cat-bg: #f8ece2; --cat-fg: #76471e; }
+.cat-veri_muhendisligi { --cat-bg: #f8f5e2; --cat-fg: #766a1e; }
+.cat-web_saas          { --cat-bg: #f3f8e2; --cat-fg: #60761e; }
+.cat-gomulu            { --cat-bg: #eaf8e2; --cat-fg: #3e761e; }
+.cat-siber_guvenlik    { --cat-bg: #e2f8e3; --cat-fg: #1e7620; }
+.cat-fintech           { --cat-bg: #e2f8eb; --cat-fg: #1e7642; }
+.cat-savunma_havacilik { --cat-bg: #e2f8f4; --cat-fg: #1e7665; }
+.cat-robotik_otonom    { --cat-bg: #e2f4f8; --cat-fg: #1e6576; }
+.cat-oyun              { --cat-bg: #e2ebf8; --cat-fg: #1e4276; }
+.cat-bulut_devops      { --cat-bg: #e2e3f8; --cat-fg: #1e2076; }
+.cat-saglik_bio        { --cat-bg: #eae2f8; --cat-fg: #3e1e76; }
+.cat-eticaret          { --cat-bg: #f3e2f8; --cat-fg: #601e76; }
+.cat-danismanlik       { --cat-bg: #f8e2f5; --cat-fg: #761e6a; }
+.cat-quantum_derin_tek { --cat-bg: #f8e2ec; --cat-fg: #761e47; }
+
+/* Koyu tema karşılıkları — dosyada yukarıdaki açık tema tanımlarından SONRA gelmeli,
+   aksi halde kaskad sırası yüzünden geçersiz kalır (aynı özgüllük → sıradaki kazanır).
+   Manuel tema düğmesi ([data-theme]) sistem tercihini geçersiz kılabilsin diye aynı
+   renkler iki blokta da tanımlı (bkz. yukarıdaki :root koyu tema notu). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cat-ai_ml             { --cat-bg: #412f1f; --cat-fg: #e7bf9d; }
+  :root:not([data-theme="light"]) .cat-veri_muhendisligi { --cat-bg: #413d1f; --cat-fg: #e7dc9d; }
+  :root:not([data-theme="light"]) .cat-web_saas          { --cat-bg: #39411f; --cat-fg: #d4e79d; }
+  :root:not([data-theme="light"]) .cat-gomulu            { --cat-bg: #2c411f; --cat-fg: #b8e79d; }
+  :root:not([data-theme="light"]) .cat-siber_guvenlik    { --cat-bg: #1f4120; --cat-fg: #9de79f; }
+  :root:not([data-theme="light"]) .cat-fintech           { --cat-bg: #1f412e; --cat-fg: #9de7bc; }
+  :root:not([data-theme="light"]) .cat-savunma_havacilik { --cat-bg: #1f413b; --cat-fg: #9de7d8; }
+  :root:not([data-theme="light"]) .cat-robotik_otonom    { --cat-bg: #1f3b41; --cat-fg: #9dd8e7; }
+  :root:not([data-theme="light"]) .cat-oyun              { --cat-bg: #1f2e41; --cat-fg: #9dbce7; }
+  :root:not([data-theme="light"]) .cat-bulut_devops      { --cat-bg: #1f2041; --cat-fg: #9d9fe7; }
+  :root:not([data-theme="light"]) .cat-saglik_bio        { --cat-bg: #2c1f41; --cat-fg: #b89de7; }
+  :root:not([data-theme="light"]) .cat-eticaret          { --cat-bg: #391f41; --cat-fg: #d49de7; }
+  :root:not([data-theme="light"]) .cat-danismanlik       { --cat-bg: #411f3d; --cat-fg: #e79ddc; }
+  :root:not([data-theme="light"]) .cat-quantum_derin_tek { --cat-bg: #411f2f; --cat-fg: #e79dbf; }
+}
+:root[data-theme="dark"] .cat-ai_ml             { --cat-bg: #412f1f; --cat-fg: #e7bf9d; }
+:root[data-theme="dark"] .cat-veri_muhendisligi { --cat-bg: #413d1f; --cat-fg: #e7dc9d; }
+:root[data-theme="dark"] .cat-web_saas          { --cat-bg: #39411f; --cat-fg: #d4e79d; }
+:root[data-theme="dark"] .cat-gomulu            { --cat-bg: #2c411f; --cat-fg: #b8e79d; }
+:root[data-theme="dark"] .cat-siber_guvenlik    { --cat-bg: #1f4120; --cat-fg: #9de79f; }
+:root[data-theme="dark"] .cat-fintech           { --cat-bg: #1f412e; --cat-fg: #9de7bc; }
+:root[data-theme="dark"] .cat-savunma_havacilik { --cat-bg: #1f413b; --cat-fg: #9de7d8; }
+:root[data-theme="dark"] .cat-robotik_otonom    { --cat-bg: #1f3b41; --cat-fg: #9dd8e7; }
+:root[data-theme="dark"] .cat-oyun              { --cat-bg: #1f2e41; --cat-fg: #9dbce7; }
+:root[data-theme="dark"] .cat-bulut_devops      { --cat-bg: #1f2041; --cat-fg: #9d9fe7; }
+:root[data-theme="dark"] .cat-saglik_bio        { --cat-bg: #2c1f41; --cat-fg: #b89de7; }
+:root[data-theme="dark"] .cat-eticaret          { --cat-bg: #391f41; --cat-fg: #d49de7; }
+:root[data-theme="dark"] .cat-danismanlik       { --cat-bg: #411f3d; --cat-fg: #e79ddc; }
+:root[data-theme="dark"] .cat-quantum_derin_tek { --cat-bg: #411f2f; --cat-fg: #e79dbf; }
+
+/* ----------------------------------------------------------------- detay */
+
+.detail h2 { margin: 0 0 3px; font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.detail h3 {
+  margin: 20px 0 8px; font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.detail a { color: var(--accent); text-decoration: none; }
+.detail a:hover { text-decoration: underline; }
+.detail ul { margin: 0; padding-left: 0; list-style: none; }
+.detail li {
+  margin-bottom: 8px; padding: 10px 12px;
+  background: var(--panel-2); border-radius: var(--radius-sm);
+}
+.empty { padding: 40px 18px; text-align: center; color: var(--muted); font-size: 13.5px; }
+
+/* Kaydırılabilir alanlarda ince, tema uyumlu scrollbar (WebKit). */
+.filters::-webkit-scrollbar, .detail::-webkit-scrollbar, #categoryChecks::-webkit-scrollbar { width: 8px; }
+.filters::-webkit-scrollbar-thumb, .detail::-webkit-scrollbar-thumb, #categoryChecks::-webkit-scrollbar-thumb {
+  background: var(--line); border-radius: 999px;
+}
+
+/* --------------------------------------------------------------- duyarlı */
+
+@media (max-width: 980px) {
+  .layout, .layout:has(.detail:not([hidden])) { grid-template-columns: 1fr; }
+  /* Tek sütuna düşünce sticky konumlama satırlar üst üste biner (grid+sticky
+     etkileşimi tutarsız) — dar ekranda normal akışa dönülür. Bu kural dosyanın
+     sonunda olmalı: aynı özgüllükteki kurallarda sıradaki kazanır. */
+  .filters, .detail { position: static; max-height: none; }
+  /* Dokunmatik ekranda hedef boyutu 44x44'e çıkar (masaüstünde 36 yeterli). */
+  .btn { min-height: 44px; }
+  .icon-btn { min-width: 44px; }
+  .checks input { width: 18px; height: 18px; }
+  th, td { padding: 11px 14px; }
+}
+
+/* Hareket azaltma tercihine saygı: geçiş/animasyonları pratik olarak kapat. */
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

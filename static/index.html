@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span>Career&nbsp;Radar</span>
+    </div>
+    <div id="stats" class="stats">yükleniyor…</div>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="btn btn-ghost icon-btn" type="button" aria-label="Koyu temaya geç" title="Açık/koyu tema">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 3v2M12 19v2M5.05 5.05l1.41 1.41M17.54 17.54l1.41 1.41M3 12h2M19 12h2M5.05 18.95l1.41-1.41M17.54 6.46l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" hidden><path d="M20 14.5A8 8 0 1110.5 5c.34 0 .67.02 1 .06a6 6 0 008.44 8.44c.04.33.06.66.06 1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+      <a id="csv" class="btn" href="/api/export.csv">CSV indir</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="filters">
+      <label class="field field-search">
+        <span>Ara</span>
+        <input id="q" type="search" placeholder="şirket adı…" autocomplete="off">
+      </label>
+
+      <label class="field">
+        <span>Şehir</span>
+        <select id="city"><option value="">hepsi</option></select>
+      </label>
+
+      <label class="field">
+        <span>Kaynak</span>
+        <select id="source"><option value="">hepsi</option></select>
+      </label>
+
+      <fieldset class="checks" id="categoryChecks">
+        <legend>Kategori (AI/Web/Quantum... — çoklu seçilebilir)</legend>
+      </fieldset>
+
+      <label class="field">
+        <span>Sektör (dizin, ham)</span>
+        <select id="sector"><option value="">hepsi</option></select>
+      </label>
+
+      <label class="field">
+        <span>Takip durumu</span>
+        <select id="status">
+          <option value="">hepsi</option>
+          <option value="listemde">listemde</option>
+          <option value="yazdim">yazdım</option>
+          <option value="cevap_geldi">cevap geldi</option>
+          <option value="ilgilenmiyorum">ilgilenmiyorum</option>
+        </select>
+      </label>
+
+      <fieldset class="checks">
+        <legend>Yalnızca</legend>
+        <label><input type="checkbox" data-flag="has_domain"> alan adı olanlar</label>
+        <label><input type="checkbox" data-flag="has_careers"> kariyer sayfası olanlar</label>
+        <label><input type="checkbox" data-flag="has_email"> e-postası olanlar</label>
+        <label><input type="checkbox" data-flag="has_hr_email"> İK e-postası olanlar</label>
+        <label><input type="checkbox" data-flag="has_jobs"> aktif ilanı olanlar</label>
+        <label><input type="checkbox" data-flag="has_internship"> staj ilanı olanlar</label>
+      </fieldset>
+
+      <label class="field">
+        <span>Sırala</span>
+        <select id="sort">
+          <option value="name">isme göre</option>
+          <option value="newest">en yeni eklenen</option>
+          <option value="jobs">açık ilan sayısı</option>
+          <option value="contacts">iletişim bilgisi</option>
+        </select>
+      </label>
+
+      <button id="reset" class="btn btn-ghost" type="button">Filtreleri temizle</button>
+    </aside>
+
+    <main class="results">
+      <div class="results-head">
+        <span id="count">—</span>
+        <div class="pager">
+          <button id="prev" class="btn btn-ghost icon-btn" type="button" aria-label="Önceki sayfa">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span id="pageinfo">1</span>
+          <button id="next" class="btn btn-ghost icon-btn" type="button" aria-label="Sonraki sayfa">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="grid">
+          <thead>
+            <tr>
+              <th>Şirket</th>
+              <th>Şehir</th>
+              <th>Kategori</th>
+              <th>Kaynak</th>
+              <th class="num">İlan</th>
+              <th>Durum</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <aside id="detail" class="detail" hidden></aside>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
