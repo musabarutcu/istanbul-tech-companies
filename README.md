@@ -1,4 +1,4 @@
-# Career Radar
+
 
 İstanbul odaklı, Türkiye'deki teknoloji şirketlerini **keşfetmek** için yapılmış kişisel bir
 araç. Bir bilgisayar mühendisliği öğrencisinin yaz stajı / iş arayışı için üretildi.
